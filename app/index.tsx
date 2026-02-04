@@ -1,15 +1,12 @@
 import { Redirect } from 'expo-router';
-import { useContext } from 'react';
-import { AuthContext } from '../src/auth/AuthContext';
+import { useAuth } from '../src/auth/useAuth';
 
 export default function Index() {
-  const { user, loading } = useContext(AuthContext);
+  const { user } = useAuth();
 
-  if (loading) return null;
+  if (!user) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
-  return user ? (
-    <Redirect href="/(tabs)" />
-  ) : (
-    <Redirect href="/(auth)/login" />
-  );
+  return <Redirect href="/(tabs)" />; // or /home later
 }
