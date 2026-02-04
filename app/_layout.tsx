@@ -1,10 +1,14 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "../src/auth/AuthContext";
+import { ThemeProvider } from "@react-navigation/native";
+import { DefaultTheme } from "@react-navigation/native";
 
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <ThemeProvider value={DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </ThemeProvider>
     </AuthProvider>
   );
 }
