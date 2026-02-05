@@ -7,6 +7,8 @@ import CarouselCard from "../../src/components/home/CarouselCard";
 import CategoryCard from "../../src/components/home/CategoryCard";
 import DoctorCard from "../../src/components/home/DoctorCard";
 
+import { useRouter } from "expo-router";
+
 const categories = ["Cardiology", "Dental", "Neurology", "Skin", "Pediatrics"];
 
 const doctors = [
@@ -35,6 +37,7 @@ const doctors = [
 
 export default function HomeScreen() {
   const { theme } = useTheme();
+  const router = useRouter();
 
   return (
     <ScrollView
@@ -72,12 +75,18 @@ export default function HomeScreen() {
           marginTop: 16,
         }}
       >
-        <Text style={{ color: theme.colors.text, fontSize: 18 }}>
+        <Text style={{ color: theme.colors.text, fontSize: 18, marginTop: 15 }}>
           All Doctors
         </Text>
 
-        <TouchableOpacity>
-          <Text style={{ color: theme.colors.primary }}>See All</Text>
+        <TouchableOpacity
+        onPress={() => router.push("/doctors")}
+        style={{
+          padding: 16,
+          borderRadius: 12,
+          alignItems: "center",
+        }}>
+          <Text style={{ color: theme.colors.primary, fontSize: 15 }}>See All</Text>
         </TouchableOpacity>
       </View>
 

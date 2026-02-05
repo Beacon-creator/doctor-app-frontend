@@ -4,6 +4,7 @@ export const lightTheme = {
     text: "#1A1A1A",
     primary: "#007BFF",
     secondary: "#FFA500",
+    tabmute: "#bdbdbd",
     muted: "#6B7280",
     card: "#FFFFFF",
     border: "#E0E0E0",

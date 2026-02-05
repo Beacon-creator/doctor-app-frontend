@@ -1,4 +1,3 @@
-
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../../src/styles/ThemeContext";
@@ -13,13 +12,11 @@ export default function TabLayout() {
         headerShown: false,
         tabBarShowLabel: false,
 
-        // theme colors
         tabBarActiveTintColor: theme.colors.primary,
-        tabBarInactiveTintColor: theme.colors.muted,
-        tabBarActiveBackgroundColor: theme.colors.muted,
+        tabBarInactiveTintColor: theme.colors.tabmute,
+        tabBarActiveBackgroundColor: theme.colors.tabmute,
         tabBarInactiveBackgroundColor: theme.colors.background,
 
-        // styled tab bar
         tabBarStyle: {
           backgroundColor: theme.colors.card,
           borderTopWidth: 0,
