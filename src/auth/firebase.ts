@@ -1,9 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { initializeAuth } from 'firebase/auth';
+import { initializeAuth, GoogleAuthProvider } from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// 👇 TEMP TS FIX for Firebase v12
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { getReactNativePersistence } = require('firebase/auth');
 
 const firebaseConfig = {
@@ -20,3 +18,5 @@ const app = initializeApp(firebaseConfig);
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
+
+export const googleProvider = new GoogleAuthProvider();
