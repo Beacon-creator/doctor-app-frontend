@@ -1,14 +1,25 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { router } from "expo-router";
-import { useTheme } from "../src/styles/ThemeContext";
+import { router, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
 
+import { useTheme } from "../src/styles/ThemeContext";
 
 export default function PaymentSuccess() {
   const { theme } = useTheme();
-  const { doctor, date, time } = useLocalSearchParams();
 
+  const params = useLocalSearchParams();
+
+  const doctor = Array.isArray(params.doctor)
+    ? params.doctor[0]
+    : params.doctor;
+
+  const date = Array.isArray(params.date)
+    ? params.date[0]
+    : params.date;
+
+  const time = Array.isArray(params.time)
+    ? params.time[0]
+    : params.time;
 
   return (
     <View
@@ -20,7 +31,6 @@ export default function PaymentSuccess() {
         backgroundColor: theme.colors.background,
       }}
     >
-      {/* BIG SUCCESS ICON */}
       <Ionicons
         name="checkmark-circle"
         size={120}
@@ -43,26 +53,25 @@ export default function PaymentSuccess() {
         style={{
           fontSize: 16,
           color: theme.colors.text,
-          marginBottom: 40,
+          marginBottom: 10,
           textAlign: "center",
         }}
       >
-        You have successfully paid {doctor}.
+        You have successfully paid {doctor ?? "your doctor"}.
       </Text>
 
       {date && time && (
-      <Text
-        style={{
+        <Text
+          style={{
             fontSize: 14,
             color: theme.colors.muted,
-            marginBottom: 20,
+            marginBottom: 30,
             textAlign: "center",
           }}
         >
-        Appointment: {date} • {time}
-      </Text>
+          Appointment: {date} • {time}
+        </Text>
       )}
-
 
       <TouchableOpacity
         style={{

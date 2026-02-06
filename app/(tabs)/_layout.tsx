@@ -37,16 +37,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* DATE / APPOINTMENT */}
-      <Tabs.Screen
-        name="date"
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="calendar-outline" size={22} color={color} />
-          ),
-        }}
-      />
-
       {/* CHAT */}
       <Tabs.Screen
         name="chat"

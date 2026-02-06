@@ -20,6 +20,7 @@ export default function CategoryCard({ title }: any) {
         backgroundColor: theme.colors.card,
         borderRadius: 20,
         marginLeft: 16,
+        justifyContent: "center",
       }}
     >
       <Text style={{ color: theme.colors.text }}>{title}</Text>

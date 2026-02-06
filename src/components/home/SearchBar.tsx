@@ -2,7 +2,19 @@ import { View, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../../styles/ThemeContext";
 
-export default function SearchBar() {
+type SearchBarProps = {
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+  showVoiceIcon?: boolean;
+};
+
+export default function SearchBar({
+  value,
+  onChangeText,
+  placeholder = "Search...",
+  showVoiceIcon = false,
+}: SearchBarProps) {
   const { theme } = useTheme();
 
   return (
@@ -10,24 +22,31 @@ export default function SearchBar() {
       style={{
         flexDirection: "row",
         alignItems: "center",
-        marginHorizontal: 16,
-        marginBottom: 12,
         backgroundColor: theme.colors.card,
-        borderRadius: 12,
         paddingHorizontal: 12,
+        borderRadius: 12,
+        marginVertical: 10,
       }}
     >
       <Ionicons name="search" size={20} color={theme.colors.muted} />
-
       <TextInput
-        placeholder="Search a Doctor"
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
         placeholderTextColor={theme.colors.muted}
-        style={{ flex: 1, padding: 10, color: theme.colors.text }}
+        style={{
+          flex: 1,
+          paddingVertical: 10,
+          paddingHorizontal: 8,
+          color: theme.colors.text,
+        }}
       />
 
-      <TouchableOpacity>
-        <Ionicons name="mic-outline" size={20} color={theme.colors.primary} />
-      </TouchableOpacity>
+      {showVoiceIcon && (
+        <TouchableOpacity>
+          <Ionicons name="mic-outline" size={22} color={theme.colors.primary} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
