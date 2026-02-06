@@ -27,7 +27,7 @@ export default function Login() {
     }
   };
 
-  if (loading) return null; // or splash screen
+  if (loading) return null;
 
   return (
     <View
@@ -98,7 +98,7 @@ export default function Login() {
           marginBottom: 30,
         }}
       >
-        {/* You can replace with Google icon component */}
+       
         <Text style={{ marginLeft: 10, color: theme.colors.text }}>Sign in with Google</Text>
       </TouchableOpacity>
 

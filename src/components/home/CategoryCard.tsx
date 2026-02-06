@@ -1,11 +1,19 @@
 import { TouchableOpacity, Text } from "react-native";
 import { useTheme } from "../../styles/ThemeContext";
+import { useRouter } from "expo-router";
 
 export default function CategoryCard({ title }: any) {
   const { theme } = useTheme();
+  const router = useRouter();
 
   return (
     <TouchableOpacity
+    onPress={() =>
+      router.push({
+        pathname: "/doctors",
+        params: { category: title },
+      })
+    }
       style={{
         paddingVertical: 8,
         paddingHorizontal: 14,

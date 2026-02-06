@@ -1,16 +1,13 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 
 import { useTheme } from "../../src/styles/ThemeContext";
 import HorizontalSelector from "../../src/components/home/HorizontalSelector";
+
+import { doctors } from "@/src/data/doctors.mock";
 
 export default function AppointmentScreen() {
   const { theme } = useTheme();
@@ -19,17 +16,10 @@ export default function AppointmentScreen() {
   const [date, setDate] = useState("Mon 24");
   const [time, setTime] = useState("10:00");
 
-  // mock doctor data
-  const doctor = {
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    price: "$45",
-    bio: "Dr. Sarah Johnson is a leading cardiologist with over a decade of experience in treating complex heart conditions. She focuses on preventive care and patient education.",
-    image: "https://i.pravatar.cc/200?img=12",
-  };
+  const { id } = useLocalSearchParams();
+  const doctor = doctors.find(d => d.id === id);
 
-  const dates = ["Mon 24", "Tue 25", "Wed 26", "Thu 27", "Fri 28"];
-  const times = ["09:00", "10:00", "12:00", "14:00", "16:00"];
+  if (!doctor) return null;
 
   return (
     <ScrollView
@@ -108,7 +98,7 @@ export default function AppointmentScreen() {
       />
 
       <HorizontalSelector
-        data={dates}
+        data={doctor.availableDates}
         selected={date}
         onSelect={setDate}
       />
@@ -116,18 +106,33 @@ export default function AppointmentScreen() {
       {/* Time Section */}
       <SectionHeader
         title="Working Hours"
-        onPress={() => router.push("/(tabs)/date")}
+        onPress={() =>
+          router.push({
+            pathname: "/(tabs)/date",
+            params: { doctorId: doctor.id },
+          })
+        }
         theme={theme}
       />
 
       <HorizontalSelector
-        data={times}
+        data={doctor.workingHours}
         selected={time}
         onSelect={setTime}
       />
 
       {/* Book Button */}
       <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/payment",
+            params: {
+              doctorId: doctor.id,
+              doctorName: doctor.name,
+              amount: doctor.price,
+            },
+          })
+        }
         style={{
           backgroundColor: theme.colors.primary,
           padding: 16,
@@ -136,7 +141,7 @@ export default function AppointmentScreen() {
           alignItems: "center",
         }}
       >
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
           Book Appointment
         </Text>
       </TouchableOpacity>
@@ -144,7 +149,7 @@ export default function AppointmentScreen() {
   );
 }
 
-/* small reusable header inside same file */
+
 function SectionHeader({ title, onPress, theme }: any) {
   return (
     <View

@@ -1,9 +1,14 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import { useTheme } from "../src/styles/ThemeContext";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
+
 
 export default function PaymentSuccess() {
   const { theme } = useTheme();
+  const { doctor, date, time } = useLocalSearchParams();
+
 
   return (
     <View
@@ -15,6 +20,14 @@ export default function PaymentSuccess() {
         backgroundColor: theme.colors.background,
       }}
     >
+      {/* BIG SUCCESS ICON */}
+      <Ionicons
+        name="checkmark-circle"
+        size={120}
+        color={theme.colors.primary}
+        style={{ marginBottom: 20 }}
+      />
+
       <Text
         style={{
           fontSize: 28,
@@ -34,8 +47,22 @@ export default function PaymentSuccess() {
           textAlign: "center",
         }}
       >
-        You have successfully paid Dr. Jane Doe.
+        You have successfully paid {doctor}.
       </Text>
+
+      {date && time && (
+      <Text
+        style={{
+            fontSize: 14,
+            color: theme.colors.muted,
+            marginBottom: 20,
+            textAlign: "center",
+          }}
+        >
+        Appointment: {date} • {time}
+      </Text>
+      )}
+
 
       <TouchableOpacity
         style={{
@@ -45,7 +72,7 @@ export default function PaymentSuccess() {
           backgroundColor: theme.colors.primary,
           alignItems: "center",
         }}
-        onPress={() => router.push("/(tabs)")} // go to homepage
+        onPress={() => router.push("/(tabs)")}
       >
         <Text
           style={{

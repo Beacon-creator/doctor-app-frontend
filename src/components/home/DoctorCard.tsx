@@ -1,9 +1,13 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../../styles/ThemeContext";
+import { useRouter } from "expo-router";
+
 
 export default function DoctorCard({ doctor }: any) {
   const { theme } = useTheme();
+  const router = useRouter();
+
 
   return (
     <View
@@ -48,6 +52,12 @@ export default function DoctorCard({ doctor }: any) {
       </View>
 
       <TouchableOpacity
+        onPress={() =>
+          router.push({
+            pathname: "/appointment/[id]",
+            params: { id: doctor.id },
+          })
+      }
         style={{
           backgroundColor: theme.colors.primary,
           paddingHorizontal: 12,

@@ -3,6 +3,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import { useTheme } from "../src/styles/ThemeContext";
+import { useLocalSearchParams } from "expo-router";
+import { doctors } from "@/src/data/doctors.mock";
 
 export default function PaymentScreen() {
   const { theme } = useTheme();
@@ -14,11 +16,18 @@ export default function PaymentScreen() {
   const [cvv, setCvv] = useState("");
   const [cardType, setCardType] = useState<"visa" | "mastercard" | "verve" | "amex" | null>(null);
 
-  const doctorName = "Dr. Jane Doe";
-  const amount = 250;
+  const { doctorId, date, time } = useLocalSearchParams();
+
+  const doctor = doctors.find(d => d.id === doctorId);
+
+  if (!doctor) return null;
+
+  const doctorName = doctor.name;
+  const amount = doctor.price;
 
   const formatCardNumber = (text: string) => {
   const cleaned = text.replace(/\D/g, "").slice(0, 16);
+
 
   // Detect card type
   if (/^4/.test(cleaned)) setCardType("visa");
@@ -42,7 +51,11 @@ export default function PaymentScreen() {
   };
 
   const handlePay = () => {
-    router.push("/payment-success");
+   router.push({
+    pathname: "/payment-success",
+    params: { doctor: doctor.name, date, time },
+});
+
   };
 
   const isValid = name && cardNumber.length === 19 && expiry.length === 5 && cvv.length >= 3;
@@ -63,6 +76,10 @@ export default function PaymentScreen() {
       <Text style={{ fontWeight: "bold", fontSize: 48, color: theme.colors.primary, marginBottom: 30 }}>
         ${amount}
       </Text>
+      <Text style={{ color: theme.colors.muted }}>
+        {date} • {time}
+      </Text>
+
 
       <View style={{ backgroundColor: theme.colors.card, padding: 16, borderRadius: 12 }}>
         <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 12 }}>Card Details</Text>

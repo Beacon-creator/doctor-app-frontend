@@ -1,11 +1,14 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
 import { Calendar } from "react-native-calendars";
 
-import { useTheme } from "../../src/styles/ThemeContext";
 import HorizontalSelector from "../../src/components/home/HorizontalSelector";
+import { useTheme } from "../../src/styles/ThemeContext";
+
+import { useLocalSearchParams } from "expo-router";
+import { doctors } from "../../src/data/doctors.mock";
 
 export default function DateScreen() {
   const { theme } = useTheme();
@@ -14,13 +17,12 @@ export default function DateScreen() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("10:00");
 
-  // mock available dates
-  const availableDates = [
-    "2026-02-10",
-    "2026-02-12",
-    "2026-02-15",
-    "2026-02-20",
-  ];
+  const { doctorId } = useLocalSearchParams();
+  const doctor = doctors.find((d) => d.id === doctorId);
+
+  if (!doctor) return null;
+
+  const availableDates = doctor.availableDates || [];
 
   // mark available + selected
   const markedDates = availableDates.reduce((acc: any, date) => {
@@ -32,17 +34,6 @@ export default function DateScreen() {
     };
     return acc;
   }, {});
-
-  // hourly time slots
-  const timeSlots = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-  ];
 
   return (
     <ScrollView
@@ -100,7 +91,7 @@ export default function DateScreen() {
       </Text>
 
       <HorizontalSelector
-        data={timeSlots}
+        data={doctor.workingHours}
         selected={selectedTime}
         onSelect={setSelectedTime}
       />
@@ -108,7 +99,16 @@ export default function DateScreen() {
       {/* Button */}
       <TouchableOpacity
         disabled={!selectedDate}
-        onPress={() => router.push("/payment")}
+        onPress={() =>
+          router.push({
+            pathname: "/payment",
+            params: {
+              doctorId: doctor.id,
+              date: selectedDate,
+              time: selectedTime,
+            },
+          })
+        }
         style={{
           marginTop: 30,
           padding: 16,

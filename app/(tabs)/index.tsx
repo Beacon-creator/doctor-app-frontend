@@ -7,33 +7,13 @@ import CarouselCard from "../../src/components/home/CarouselCard";
 import CategoryCard from "../../src/components/home/CategoryCard";
 import DoctorCard from "../../src/components/home/DoctorCard";
 
+import { doctors } from "@/src/data/doctors.mock";
+
+
 import { useRouter } from "expo-router";
 
 const categories = ["Cardiology", "Dental", "Neurology", "Skin", "Pediatrics"];
 
-const doctors = [
-  {
-    id: "1",
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiologist",
-    about: "Heart specialist with 10+ years experience.",
-    rating: 4.8,
-  },
-  {
-    id: "2",
-    name: "Dr. Michael Lee",
-    specialty: "Dentist",
-    about: "Cosmetic & family dentistry expert.",
-    rating: 4.6,
-  },
-  {
-    id: "3",
-    name: "Dr. Amina Bello",
-    specialty: "Neurologist",
-    about: "Brain and nervous system specialist.",
-    rating: 4.9,
-  },
-];
 
 export default function HomeScreen() {
   const { theme } = useTheme();
@@ -91,7 +71,12 @@ export default function HomeScreen() {
       </View>
 
       {doctors.map((doc) => (
-        <DoctorCard key={doc.id} doctor={doc} />
+        <DoctorCard
+          key={doc.id}
+          doctor={doc}
+          onPress={() => router.push(`/appointment/${doc.id}`)}
+        />
+
       ))}
 
       <View style={{ height: 40 }} />

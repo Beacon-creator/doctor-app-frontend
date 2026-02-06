@@ -2,41 +2,22 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { useLocalSearchParams } from "expo-router";
 
 import SearchInput from "../../src/components/home/SearchInput";
 import DoctorCard from "../../src/components/home/DoctorCard";
 
+import { doctors } from "@/src/data/doctors.mock";
+
+
 export default function DoctorsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
+  const { category } = useLocalSearchParams();
+  const filteredDoctors = category
+    ? doctors.filter(d => d.category === category)
+    : doctors;
 
-  // temporary mock data
-  const doctors = [
-    {
-      id: "1",
-      name: "Dr. Sarah Johnson",
-      specialty: "Cardiologist",
-      rating: 4.8,
-      bio: "Heart specialist with 10+ years experience.",
-      image: "https://i.pravatar.cc/150?img=12",
-    },
-    {
-      id: "2",
-      name: "Dr. Michael Lee",
-      specialty: "Dermatologist",
-      rating: 4.6,
-      bio: "Skin care expert and consultant.",
-      image: "https://i.pravatar.cc/150?img=32",
-    },
-    {
-      id: "3",
-      name: "Dr. Aisha Bello",
-      specialty: "Pediatrician",
-      rating: 4.9,
-      bio: "Child healthcare specialist.",
-      image: "https://i.pravatar.cc/150?img=5",
-    },
-  ];
 
   return (
     <View
@@ -71,7 +52,7 @@ export default function DoctorsScreen() {
             marginLeft: 12,
           }}
         >
-          All Doctors
+        {category ? `${category} Doctors` : "All Doctors"}
         </Text>
       </View>
 
@@ -80,11 +61,15 @@ export default function DoctorsScreen() {
 
       {/* Doctor List */}
       <FlatList
-        data={doctors}
+        data={filteredDoctors}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingVertical: 16 }}
         renderItem={({ item }) => (
-          <DoctorCard doctor={item} />
+          <DoctorCard
+            doctor={item}
+            onPress={() => router.push(`/appointment/${item.id}`)}
+          />
+
         )}
         showsVerticalScrollIndicator={false}
       />
