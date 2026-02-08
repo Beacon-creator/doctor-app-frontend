@@ -21,6 +21,7 @@ export const darkTheme = {
     primary: "#1E90FF",
     secondary: "#FFA500",
     muted: "#9CA3AF",
+    tabmute: "#90a8d8",
     card: "#1F1F1F",
     border: "#333333",
     placeholder: "#AAAAAA",
