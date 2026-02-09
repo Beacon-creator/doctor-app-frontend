@@ -53,7 +53,7 @@ export default function Index() {
       >
         <Animated.View style={animatedStyle}>
           <Image
-            source={require("../assets/images/splash.png")}
+            source={require("../assets/images/splash-icon.png")}
             style={styles.logo}
             resizeMode="contain"
           />
