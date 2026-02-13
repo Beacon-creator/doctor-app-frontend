@@ -13,15 +13,15 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const { user, loading } = useAuth();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace("/(tabs)"); // redirect if logged in
-    }
-  }, [user, loading]);
 
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
+      router.replace("/(tabs)");
+      const token = await auth.currentUser?.getIdToken();
+      console.log("ID TOKEN:", token);
+      return token;
+      
     } catch (error: any) {
       console.log("LOGIN ERROR:", error.code, error.message);
     }

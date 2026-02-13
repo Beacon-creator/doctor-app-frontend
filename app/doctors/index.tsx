@@ -2,29 +2,39 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../src/styles/ThemeContext";
-import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import SearchBar from "../../src/components/home/SearchBar";
 import DoctorCard from "../../src/components/home/DoctorCard";
-import { doctors } from "@/src/data/doctors.mock";
+
+import { fetchDoctors, BackendDoctor } from "../../src/api/doctor";
 
 export default function DoctorsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const { category } = useLocalSearchParams();
+  const [doctors, setDoctors] = useState<BackendDoctor[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Filter by category if passed
-  const filteredDoctors = category
-    ? doctors.filter((d) => d.category === category)
-    : doctors;
+  useEffect(() => {
+    loadDoctors();
+  }, []);
 
-  // Apply search filter
-  const displayedDoctors = filteredDoctors.filter(
-    (doc) =>
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.specialty.toLowerCase().includes(searchQuery.toLowerCase())
+  const loadDoctors = async () => {
+    try {
+      const data = await fetchDoctors();
+      setDoctors(data);
+    } catch (e) {
+      console.log("Doctor fetch error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredDoctors = doctors.filter(doc =>
+    doc.user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    doc.specialty.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -50,25 +60,31 @@ export default function DoctorsScreen() {
             marginLeft: 12,
           }}
         >
-          {category ? `${category} Doctors` : "All Doctors"}
+          Doctors
         </Text>
       </View>
 
-      {/* Search */}
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
         placeholder="Search doctors..."
       />
 
-      {/* Doctor List */}
       <FlatList
-        data={displayedDoctors}
+        data={filteredDoctors}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <DoctorCard
-            doctor={item}
-            onPress={() => router.push(`/appointment/${item.id}`)}
+            doctor={{
+              id: item.id,
+              name: item.user.fullName,
+              specialty: item.specialty,
+              rating: item.rating,
+              image: item.pictureUrl,
+            }}
+            onPress={() =>
+              router.push(`/doctors/date?doctorId=${item.id}`)
+            }
           />
         )}
         showsVerticalScrollIndicator={false}

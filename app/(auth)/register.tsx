@@ -5,7 +5,6 @@ import { auth } from "../../src/auth/firebase";
 import { router } from "expo-router";
 import TextInputWithIcon from "../../src/components/TextInputWithIcon";
 import { useTheme } from "../../src/styles/ThemeContext";
-import { AntDesign } from "@expo/vector-icons"
 
 export default function Register() {
   const { theme } = useTheme();

@@ -1,12 +1,11 @@
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useTheme } from "../../src/styles/ThemeContext";
 import HorizontalSelector from "../../src/components/home/HorizontalSelector";
-
-import { doctors } from "../../src/data/doctors.mock";
+import { fetchDoctorById } from "../../src/api/doctor";
 
 export default function AppointmentScreen() {
   const { theme } = useTheme();
@@ -17,25 +16,53 @@ export default function AppointmentScreen() {
 
   const params = useLocalSearchParams();
   const doctorId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const [doctor, setDoctor] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const doctor = doctors.find((d) => d.id === doctorId);
 
-  if (!doctor) {
+  useEffect(() => {
+    loadDoctor();
+  }, [doctorId]);
+
+  const loadDoctor = async () => {
+    try {
+      console.log("Fetching doctor:", doctorId);
+
+      const id = Array.isArray(doctorId)
+        ? doctorId[0]
+        : doctorId;
+
+      const data = await fetchDoctorById(id);
+
+      console.log("Doctor API result:", data);
+
+      setDoctor(data);
+    } catch (e) {
+      console.log("Doctor fetch failed:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+  if (loading) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.colors.background,
-        }}
-      >
-        <Text style={{ color: theme.colors.text }}>
-          Doctor not found
-        </Text>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading doctor...</Text>
       </View>
     );
   }
+
+  if (!doctor) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Doctor not found</Text>
+      </View>
+    );
+  }
+
 
   return (
     <View
@@ -45,7 +72,7 @@ export default function AppointmentScreen() {
         paddingTop: 50,
       }}
     >
-      {/* FIXED HEADER */}
+
       <View
         style={{
           flexDirection: "row",
@@ -78,7 +105,7 @@ export default function AppointmentScreen() {
         {/* Doctor Info */}
         <View style={{ alignItems: "center" }}>
           <Image
-            source={{ uri: doctor.image }}
+            source={{ uri: doctor.image || "https://i.pravatar.cc/150" }}
             style={{ width: 120, height: 120, borderRadius: 60 }}
           />
 

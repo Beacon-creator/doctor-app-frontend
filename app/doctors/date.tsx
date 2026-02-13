@@ -1,31 +1,87 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
 import HorizontalSelector from "../../src/components/home/HorizontalSelector";
 import { useTheme } from "../../src/styles/ThemeContext";
-
+import { fetchDoctorById } from "../../src/api/doctor";
 import { useLocalSearchParams } from "expo-router";
-import { doctors } from "../../src/data/doctors.mock";
 
 export default function DateScreen() {
+  console.log("DateScreen rendered with params:", useLocalSearchParams());
+  console.log("Date Screen mounted with doctorId:", useLocalSearchParams().doctorId);
   const { theme } = useTheme();
   const router = useRouter();
 
+  const [doctor, setDoctor] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("10:00");
 
   const { doctorId } = useLocalSearchParams();
-  const doctor = doctors.find((d) => d.id === doctorId);
+  const [loading, setLoading] = useState(true);
 
-  if (!doctor) return null;
+  useEffect(() => {
+    if (!doctorId) return;
+
+    console.log("DATE SCREEN doctorId raw:", doctorId);
+
+    loadDoctor();
+  }, [doctorId]);
+
+  const loadDoctor = async () => {
+    try {
+      setLoading(true);
+
+      const id = Array.isArray(doctorId)
+        ? doctorId[0]
+        : doctorId;
+
+      const data = await fetchDoctorById(id);
+
+      setDoctor(data);
+    } catch (e) {
+      console.log("Doctor fetch error:", e);
+      setError("Failed to load doctor");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading doctor...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: "red", fontSize: 16 }}>{error}</Text>
+
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={{ marginTop: 20 }}>Go Back</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+
+  if (!doctor) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading doctor...</Text>
+      </View>
+    );
+  }
 
   const availableDates = doctor.availableDates || [];
 
-  // mark available + selected
-  const markedDates = availableDates.reduce((acc: any, date) => {
+  const markedDates = availableDates.reduce((acc: any, date: string) => {
     acc[date] = {
       marked: true,
       dotColor: theme.colors.primary,
@@ -40,7 +96,6 @@ export default function DateScreen() {
       style={{ flex: 1, backgroundColor: theme.colors.background }}
       contentContainerStyle={{ padding: 16, paddingTop: 50 }}
     >
-      {/* Header */}
       <TouchableOpacity onPress={() => router.back()}>
         <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
       </TouchableOpacity>
@@ -56,7 +111,6 @@ export default function DateScreen() {
         Select Date & Time
       </Text>
 
-      {/* Calendar */}
       <Calendar
         markedDates={markedDates}
         onDayPress={(day) => {
@@ -79,24 +133,16 @@ export default function DateScreen() {
         }}
       />
 
-      {/* Time Slots */}
-      <Text
-        style={{
-          fontWeight: "bold",
-          marginBottom: 10,
-          color: theme.colors.text,
-        }}
-      >
+      <Text style={{ fontWeight: "bold", marginBottom: 10, color: theme.colors.text }}>
         Available Time
       </Text>
 
       <HorizontalSelector
-        data={doctor.workingHours}
+        data={doctor.workingHours || []}
         selected={selectedTime}
         onSelect={setSelectedTime}
       />
 
-      {/* Button */}
       <TouchableOpacity
         disabled={!selectedDate}
         onPress={() =>

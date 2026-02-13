@@ -16,9 +16,11 @@ export default function Index() {
 
   const [readyToRedirect, setReadyToRedirect] = useState(false);
 
-  // animation values
+
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.85);
+  const DEV_FORCE_LOGIN = false; // set to false to skip login during development
+
 
   // animated style
   const animatedStyle = useAnimatedStyle(() => ({
@@ -27,7 +29,7 @@ export default function Index() {
   }));
 
   useEffect(() => {
-    // play animation
+ 
     opacity.value = withTiming(1, { duration: 600 });
     scale.value = withTiming(1, { duration: 600 });
   }, []);
@@ -37,7 +39,7 @@ export default function Index() {
 
     const timer = setTimeout(() => {
       setReadyToRedirect(true);
-    }, 1200); // splash duration
+    }, 1200); 
 
     return () => clearTimeout(timer);
   }, [loading]);
@@ -62,7 +64,11 @@ export default function Index() {
     );
   }
 
-  // original routing logic preserved
+  if (DEV_FORCE_LOGIN) {
+    return <Redirect href="/(auth)/login" />;
+  }
+
+  //original routing logic preserved
   if (!user) {
     return <Redirect href="/(auth)/login" />;
   }
