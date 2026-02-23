@@ -5,11 +5,10 @@ import SearchBar from "../../src/components/home/SearchBar";
 import CarouselCard from "../../src/components/home/CarouselCard";
 import CategoryCard from "../../src/components/home/CategoryCard";
 import DoctorCard from "../../src/components/home/DoctorCard";
-
-import { doctors } from "@/src/data/doctors.mock";
-
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { fetchDoctors, fetchDoctorById } from "@/src/api/doctor";
+import { fetchNotifications } from "@/src/api/notifications";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useState, useEffect, useCallback } from "react";
 
 const categories = [
   "Cardiology",
@@ -27,19 +26,91 @@ export default function HomeScreen() {
   const { theme } = useTheme();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [doctorId, setDoctorId] = useState<string | null>(null);
+  const [doctor, setDoctor] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-  // Filter doctors based on search query
+ 
+  const [doctors, setDoctors] = useState<any[]>([]);
+
+
   const filteredDoctors = doctors.filter(
     (doc) =>
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doc.specialty.toLowerCase().includes(searchQuery.toLowerCase())
+      doc.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      doc.specialty?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <HomeHeader />
+  useEffect(() => {
+    loadDoctors();
+    loadUnreadNotifications();
+  }, []);
 
-      {/* Search */}
+
+  useFocusEffect(
+    useCallback(() => {
+      loadUnreadNotifications();
+    }, [])
+  );
+
+  const loadUnreadNotifications = async () => {
+  try {
+    const notifications = await fetchNotifications();
+    const unread = notifications.filter((n: any) => !n.isRead).length;
+    setUnreadCount(unread);
+  } catch (e) {
+    console.log("Notification fetch error:", e);
+    setUnreadCount(0); 
+  }
+};
+
+  const loadDoctors = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchDoctors();
+
+  
+      const mapped = data.map((d) => ({
+        id: d.id,
+        name: d.user?.fullName,
+        specialty: d.specialty,
+        rating: d.rating,
+        image: d.pictureUrl,
+        price: d.price,
+      }));
+
+      setDoctors(mapped);
+    } catch (e) {
+      console.log("Doctors fetch error:", e);
+      setDoctors([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (doctorId) loadDoctor();
+  }, [doctorId]);
+
+  const loadDoctor = async () => {
+    try {
+      console.log("Loading payment doctor:", doctorId);
+      setLoading(true);
+      const data = await fetchDoctorById(doctorId as string);
+      console.log("Payment doctor:", data);
+      setDoctor(data);
+    } catch (e) {
+      console.log("Doctor fetch error:", e);
+      setDoctor(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, marginTop: 0, backgroundColor: theme.colors.background }}>
+     
+      <HomeHeader unreadCount={unreadCount} />
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
@@ -47,7 +118,6 @@ export default function HomeScreen() {
         showVoiceIcon
       />
 
-      {/* Carousel */}
       <View style={{ height: 160, marginTop: 10 }}>
         <ScrollView
           horizontal
@@ -60,16 +130,12 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {/* Categories */}
       <Text style={{ color: theme.colors.text, fontSize: 18, margin: 16 }}>
         Categories
       </Text>
 
-      <View style={{ height: 100 }}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        >
+      <View style={{ height: 50 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categories.map((cat) => (
             <CategoryCard
               key={cat}
@@ -80,7 +146,6 @@ export default function HomeScreen() {
         </ScrollView>
       </View>
 
-      {/* Doctors */}
       <View
         style={{
           flexDirection: "row",
@@ -90,19 +155,20 @@ export default function HomeScreen() {
           alignItems: "center",
         }}
       >
-        <Text style={{ color: theme.colors.text, fontSize: 18, marginTop: 15 }}>
+        <Text style={{ color: theme.colors.text, fontSize: 18, marginTop: 25 }}>
           All Doctors
         </Text>
 
         <TouchableOpacity
           onPress={() => router.push("/doctors")}
-          style={{ padding: 8, borderRadius: 12, alignItems: "center" }}
+          style={{ padding: 8, borderRadius: 12, marginTop: 25, alignItems: "center" }}
         >
-          <Text style={{ color: theme.colors.primary, fontSize: 15 }}>See All</Text>
+          <Text style={{ color: theme.colors.primary, fontSize: 18 }}>
+            See All
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* Scrollable doctor list */}
       <View style={{ flex: 1, marginTop: 10 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}

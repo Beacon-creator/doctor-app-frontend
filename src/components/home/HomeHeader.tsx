@@ -3,12 +3,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../styles/ThemeContext";
 
-export default function HomeHeader() {
-  const { theme } = useTheme();
-  const router = useRouter();
 
-  // mock unread notifications count
-  const unreadCount = 3;
+  type Props = {
+    unreadCount?: number;
+  };
+
+
+  export default function HomeHeader({ unreadCount = 0 }: Props) {
+    const { theme } = useTheme();
+    const router = useRouter();
 
   return (
     <View

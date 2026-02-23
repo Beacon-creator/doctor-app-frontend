@@ -97,12 +97,12 @@ export default function AppointmentScreen() {
         </Text>
       </View>
 
-      {/* SCROLLABLE CONTENT */}
+     
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: 16, paddingBottom: 40 }}
       >
-        {/* Doctor Info */}
+       
         <View style={{ alignItems: "center" }}>
           <Image
             source={{ uri: doctor.image || "https://i.pravatar.cc/150" }}
@@ -143,11 +143,19 @@ export default function AppointmentScreen() {
               color: theme.colors.text,
             }}
           >
-            {doctor.price}
+            ${doctor.price}
           </Text>
+
+          <View
+            style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}
+          >
+            <Text style={{ marginLeft: 4, color: theme.colors.text }}>
+              {doctor.about}
+            </Text>
+          </View>
         </View>
 
-        {/* Bio */}
+       
         <Text
           style={{
             marginTop: 20,
@@ -158,7 +166,7 @@ export default function AppointmentScreen() {
           {doctor.bio}
         </Text>
 
-        {/* Date Section */}
+       
         <SectionHeader
           title="Available Dates"
           onPress={() =>
@@ -196,16 +204,23 @@ export default function AppointmentScreen() {
 
         {/* Book Button */}
         <TouchableOpacity
-          onPress={() =>
+          onPress={() => {
+            console.log("Book appointment with:", {
+              doctorId: doctor.id,
+              date,
+              time,
+            }); 
             router.push({
               pathname: "/payment",
               params: {
                 doctorId: doctor.id,
                 doctorName: doctor.name,
                 amount: doctor.price,
+                date,
+                time,
               },
             })
-          }
+          }}
           style={{
             backgroundColor: theme.colors.primary,
             padding: 16,

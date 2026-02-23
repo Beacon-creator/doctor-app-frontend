@@ -2,7 +2,7 @@ import axios from 'axios';
 import { auth } from '../auth/firebase';
 
 
-const API_BASE_URL = 'http://172.20.10.11:3000';
+const API_BASE_URL = 'http://10.215.233.190:3000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

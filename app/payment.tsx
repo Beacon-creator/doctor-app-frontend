@@ -4,12 +4,16 @@ import { useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
 import { useTheme } from "../src/styles/ThemeContext";
-import { doctors } from "@/src/data/doctors.mock";
+import { fetchDoctorById } from "../src/api/doctor";
+import { createAppointment } from "../src/api/appointment";
+import { useEffect } from "react";
+
 
 export default function PaymentScreen() {
   const { theme } = useTheme();
   const router = useRouter();
-
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const params = useLocalSearchParams();
 
   const doctorId = Array.isArray(params.doctorId)
@@ -19,7 +23,7 @@ export default function PaymentScreen() {
   const date = Array.isArray(params.date) ? params.date[0] : params.date;
   const time = Array.isArray(params.time) ? params.time[0] : params.time;
 
-  const doctor = doctors.find((d) => d.id === doctorId);
+  const [doctor, setDoctor] = useState<any>(null);
 
   const [name, setName] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -28,23 +32,8 @@ export default function PaymentScreen() {
   const [cardType, setCardType] = useState<
     "visa" | "mastercard" | "verve" | "amex" | null
   >(null);
+  const isValid = name && cardNumber.length === 19 && expiry.length === 5 && cvv.length >= 3;
 
-  if (!doctor) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.colors.background,
-        }}
-      >
-        <Text style={{ color: theme.colors.text }}>
-          Payment data unavailable
-        </Text>
-      </View>
-    );
-  }
 
   const formatCardNumber = (text: string) => {
     const cleaned = text.replace(/\D/g, "").slice(0, 16);
@@ -69,22 +58,80 @@ export default function PaymentScreen() {
     }
   };
 
-  const isValid =
-    name &&
-    cardNumber.length === 19 &&
-    expiry.length === 5 &&
-    cvv.length >= 3;
 
-  const handlePay = () => {
+const handlePay = async () => {
+  try {
+    setLoading(true);
+
+    const payload = {
+      doctorId: doctor.id,
+      date: doctor.availableDates?.includes(date)
+        ? date
+        : doctor.availableDates?.[0] || date,
+      time: doctor.workingHours?.includes(time)
+        ? time
+        : doctor.workingHours?.[0] || time,
+    };
+
+    console.log("Creating appointment with:", payload);
+
+    const result = await createAppointment(payload);
+
+    console.log("Appointment created:", result);
+
     router.push({
       pathname: "/payment-success",
       params: {
         doctor: doctor.name,
-        date,
-        time,
+        date: payload.date,
+        time: payload.time,
       },
     });
-  };
+  } catch (e) {
+    console.log("Appointment error:", e);
+    setError("Payment failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+useEffect(() => {
+  if (doctorId) loadDoctor();
+}, [doctorId]);
+
+const loadDoctor = async () => {
+  try {
+    console.log("Loading payment doctor:", doctorId);
+    setLoading(true);
+    const data = await fetchDoctorById(doctorId as string);
+    console.log("Payment doctor:", data);
+    setDoctor(data);
+  } catch (e) {
+    console.log("Doctor fetch error:", e);
+    setDoctor(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+if (loading) {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Loading payment info...</Text>
+    </View>
+  );
+}
+
+if (!doctor) {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Payment data unavailable</Text>
+    </View>
+  );
+}
+
 
   return (
     <View
@@ -94,6 +141,13 @@ export default function PaymentScreen() {
         paddingTop: 50,
       }}
     >
+      {loading && (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Loading payment info...</Text>
+        </View>
+      )}
       {/* HEADER */}
       <View
         style={{
@@ -148,7 +202,7 @@ export default function PaymentScreen() {
             marginBottom: 10,
           }}
         >
-          {doctor.price}
+          ${doctor.price}
         </Text>
 
         {date && time && (
@@ -212,7 +266,7 @@ export default function PaymentScreen() {
         </View>
 
         <TouchableOpacity
-          disabled={!isValid}
+          disabled={!isValid || loading}
           onPress={handlePay}
           style={{
             padding: 16,
@@ -225,9 +279,20 @@ export default function PaymentScreen() {
           }}
         >
           <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
-            Pay Now
+            {loading ? "Processing..." : "Pay"}
           </Text>
         </TouchableOpacity>
+        {error && (
+          <Text
+            style={{
+              color: "red",
+              marginTop: 20,
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </Text>
+        )}
       </ScrollView>
     </View>
   );

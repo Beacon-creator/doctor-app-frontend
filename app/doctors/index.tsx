@@ -81,6 +81,7 @@ export default function DoctorsScreen() {
               specialty: item.specialty,
               rating: item.rating,
               image: item.pictureUrl,
+              price: `${item.price}`,
             }}
             onPress={() =>
               router.push(`/doctors/date?doctorId=${item.id}`)

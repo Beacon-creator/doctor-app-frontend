@@ -24,6 +24,7 @@ export default function SearchBar({
         alignItems: "center",
         backgroundColor: theme.colors.card,
         paddingHorizontal: 12,
+        marginHorizontal: 16,
         borderRadius: 12,
         marginVertical: 10,
       }}

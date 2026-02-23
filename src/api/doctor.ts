@@ -4,6 +4,7 @@ export type BackendDoctor = {
   id: string;
   specialty: string;
   about: string;
+  price: number;
   rating: number;
   pictureUrl?: string;
   user: {
@@ -25,10 +26,12 @@ export const fetchDoctorById = async (id: string) => {
   // map backend → UI model
   return {
     id: d.id,
-    name: d.user.fullName,
+    name: d.user?.fullName,
     specialty: d.specialty,
     rating: d.rating,
+    about: d.about,
     image: d.pictureUrl,
+    price: d.price,
 
     // TEMP mock scheduling data
     workingHours: [

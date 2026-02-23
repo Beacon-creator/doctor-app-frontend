@@ -14,7 +14,6 @@ export default function DoctorCard({ doctor }: any) {
       style={{
         flexDirection: "row",
         backgroundColor: theme.colors.card,
-        marginHorizontal: 16,
         marginTop: 12,
         borderRadius: 16,
         padding: 12,
@@ -33,6 +32,9 @@ export default function DoctorCard({ doctor }: any) {
         <Text style={{ color: theme.colors.muted }}>
           {doctor.specialty}
         </Text>
+         <Text style={{ marginLeft: 4, marginTop: 5, color: theme.colors.primary }}>
+            ${doctor.price}
+          </Text>
 
         <Text
           style={{ color: theme.colors.muted, fontSize: 12 }}

@@ -11,19 +11,14 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.tabmute,
-        tabBarActiveBackgroundColor: theme.colors.tabmute,
-        tabBarInactiveBackgroundColor: theme.colors.background,
 
         tabBarStyle: {
-          backgroundColor: theme.colors.card,
-          borderTopWidth: 0,
           elevation: 8,
-          paddingBottom: 50,
           paddingInline: 10,
           paddingTop: 0,
+          height: 60,
         },
       }}
     >
@@ -43,6 +38,16 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ color }) => (
             <Ionicons name="chatbubble-ellipses" size={22} color={color} />
+          ),
+        }}
+      />
+
+      {/* APPOINTMENTS */}
+      <Tabs.Screen
+        name="appointments"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="calendar-outline" size={22} color={color} />
           ),
         }}
       />
