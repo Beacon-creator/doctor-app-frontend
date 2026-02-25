@@ -2,28 +2,45 @@ import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { use, useEffect, useState } from "react";
+import { fetchAppointments } from "@/src/api/appointment";
+
+
 
 export default function HistoryScreen() {
   const { theme } = useTheme();
   const router = useRouter();
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // mock history data — replace later with real data
-  const history = [
-    {
-      id: "1",
-      doctor: "Dr. Sarah Johnson",
-      date: "Feb 12, 2026",
-      time: "10:00",
-      amount: "$45",
-    },
-    {
-      id: "2",
-      doctor: "Dr. Amina Bello",
-      date: "Feb 20, 2026",
-      time: "14:00",
-      amount: "$60",
-    },
-  ];
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
+
+  const loadHistory = async () => {
+    try {
+      const data = await fetchAppointments();
+
+      // Only past appointments
+      const past = data.filter((a: any) => {
+        return new Date(a.date) < new Date();
+      });
+
+      setHistory(past);
+
+      console.log("history:", past);
+    } catch (e) {
+      console.log("History error:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  
+
 
   const renderItem = ({ item }: any) => (
     <View
@@ -41,11 +58,11 @@ export default function HistoryScreen() {
           color: theme.colors.text,
         }}
       >
-        {item.doctor}
+        {item.doctor.user.fullName}
       </Text>
 
       <Text style={{ color: theme.colors.muted, marginTop: 4 }}>
-        {item.date} • {item.time}
+        {new Date(item.date).toDateString()}
       </Text>
 
       <Text
@@ -55,12 +72,17 @@ export default function HistoryScreen() {
           fontWeight: "600",
         }}
       >
-        {item.amount}
+        {item.doctor.price} USD
+      </Text>
+
+      <Text style={{ marginTop: 4, color: theme.colors.muted }}>
+        {item.status}
       </Text>
     </View>
   );
 
   return (
+    
     <View
       style={{
         flex: 1,
@@ -70,40 +92,48 @@ export default function HistoryScreen() {
       }}
     >
       {/* Header */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginBottom: 16,
-        }}
-      >
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            color={theme.colors.text}
+      {!loading && history.length === 0 ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text style={{ color: theme.colors.muted }}>No past appointments</Text>
+        </View>
+      ) : (
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 16,
+            }}
+          >
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={theme.colors.text}
+              />
+            </TouchableOpacity>
+
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: "bold",
+                color: theme.colors.text,
+                marginLeft: 12,
+              }}
+            >
+              Appointment History
+            </Text>
+          </View>
+
+          {/* History List */}
+          <FlatList
+            data={history}
+            keyExtractor={(item) => item.id}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
           />
-        </TouchableOpacity>
-
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: theme.colors.text,
-            marginLeft: 12,
-          }}
-        >
-          Appointment History
-        </Text>
-      </View>
-
-      {/* History List */}
-      <FlatList
-        data={history}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-      />
+        </>
+      )}
     </View>
   );
 }

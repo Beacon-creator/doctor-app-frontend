@@ -1,65 +1,55 @@
-import { View, Text, Image, FlatList, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { View, Text, Image, FlatList } from "react-native";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useEffect, useState, useCallback } from "react";
 
 import ProfileListItem from "@/src/components/profile/ProfileListItem";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { fetchMe } from "@/src/api/user";
 
 import { ComponentProps } from "react";
 import { Ionicons } from "@expo/vector-icons";
 
+type IconName = ComponentProps<typeof Ionicons>["name"];
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
   const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
-  // mock user — replace later with auth user
-  const user = {
-    name: "John Doe",
-    avatar: "https://i.pravatar.cc/200",
+  useEffect(() => {
+    loadMe();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadMe();
+    }, [])
+  );
+
+  const loadMe = async () => {
+    try {
+      const data = await fetchMe();
+      setUser(data);
+    } catch (e) {
+      console.log("Fetch me error:", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-type IconName = ComponentProps<typeof Ionicons>["name"];
-
-
-const menu: {
-  id: string;
-  title: string;
-  icon: IconName;
-  route?: string;
-  action?: string;
-}[] = [
-  {
-    id: "history",
-    title: "History",
-    icon: "time-outline",
-    route: "/profile/history",
-  },
-  {
-    id: "details",
-    title: "Personal Details",
-    icon: "person-outline",
-    route: "/profile/details",
-  },
-  {
-    id: "payment",
-    title: "Payment Method",
-    icon: "card-outline",
-    route: "/profile/payment",
-  },
-  {
-    id: "settings",
-    title: "Settings",
-    icon: "settings-outline",
-    route: "/profile/settings",
-  },
-  {
-    id: "logout",
-    title: "Logout",
-    icon: "log-out-outline",
-    action: "logout",
-  },
-];
-
+  const menu: {
+    id: string;
+    title: string;
+    icon: IconName;
+    route?: string;
+    action?: string;
+  }[] = [
+    { id: "history", title: "History", icon: "time-outline", route: "/profile/history" },
+    { id: "details", title: "Personal Details", icon: "person-outline", route: "/profile/details" },
+    { id: "settings", title: "Settings", icon: "settings-outline", route: "/profile/settings" },
+    { id: "logout", title: "Logout", icon: "log-out-outline", action: "logout" },
+  ];
 
   const handlePress = (item: any) => {
     if (item.action === "logout") {
@@ -69,55 +59,39 @@ const menu: {
     }
   };
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: theme.colors.text }}>Loading profile...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.colors.background,
-        paddingTop: 60,
-      }}
-    >
+    <View style={{ flex: 1, backgroundColor: theme.colors.background, paddingTop: 60 }}>
       {/* Profile header */}
-      <View
-        style={{
-          alignItems: "center",
-          marginBottom: 24,
-        }}
-      >
+      <View style={{ alignItems: "center", marginBottom: 24 }}>
         <Image
-          source={{ uri: user.avatar }}
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-            marginBottom: 12,
-          }}
+          source={{ uri: user?.avatarUrl || "https://i.pravatar.cc/200" }}
+          style={{ width: 100, height: 100, borderRadius: 50, marginBottom: 12 }}
         />
 
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            color: theme.colors.text,
-          }}
-        >
-          {user.name}
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: theme.colors.text }}>
+          {user?.fullName || "User"}
         </Text>
       </View>
 
-      {/* Menu list */}
       <FlatList
         data={menu}
         keyExtractor={(item) => item.id}
         contentContainerStyle={{ paddingHorizontal: 16 }}
         renderItem={({ item }) => (
-        <ProfileListItem
-          title={item.title}
-          icon={item.icon}
-          onPress={() => handlePress(item)}
-        />
-      )}
-
+          <ProfileListItem
+            title={item.title}
+            icon={item.icon}
+            onPress={() => handlePress(item)}
+          />
+        )}
         showsVerticalScrollIndicator={false}
       />
     </View>

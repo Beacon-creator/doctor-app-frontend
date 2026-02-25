@@ -2,14 +2,19 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { logout } from "../../src/auth/logout";
 
 export default function LogoutScreen() {
   const { theme } = useTheme();
   const router = useRouter();
 
-  const handleLogout = () => {
-    // Replace with real auth logout later
-    router.replace("/"); // or login screen route
+  const handleLogout = async () => {
+    try {
+      await logout();             
+      router.replace("/login");   
+    } catch (e) {
+      console.log("Logout error:", e);
+    }
   };
 
   return (
@@ -21,7 +26,6 @@ export default function LogoutScreen() {
         padding: 20,
       }}
     >
-      {/* Icon */}
       <View style={{ alignItems: "center", marginBottom: 20 }}>
         <Ionicons
           name="log-out-outline"
@@ -30,7 +34,6 @@ export default function LogoutScreen() {
         />
       </View>
 
-      {/* Text */}
       <Text
         style={{
           fontSize: 22,
@@ -53,7 +56,6 @@ export default function LogoutScreen() {
         Are you sure you want to log out of your account?
       </Text>
 
-      {/* Buttons */}
       <View style={{ gap: 12 }}>
         <TouchableOpacity
           onPress={handleLogout}

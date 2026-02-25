@@ -31,7 +31,6 @@ export const darkTheme = {
 };
 
 
-// Optionally: font sizes and spacing constants
 export const metrics = {
   padding: 10,
   margin: 10,

@@ -1,22 +1,56 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { fetchMe, updateMe } from "../../src/api/user";
 
 export default function PersonalDetailsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
 
-  // mock user data — replace with real user store later
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john@email.com");
-  const [phone, setPhone] = useState("+234 800 000 0000");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handleSave = () => {
-    console.log("Saved:", { name, email, phone });
-    router.back();
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    try {
+      const me = await fetchMe();
+      setName(me.fullName || "");
+      setEmail(me.email || "");
+      setPhone(me.phone || "");
+    } catch (e) {
+      console.log("Profile fetch error:", e);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSave = async () => {
+    try {
+      await updateMe({
+        fullName: name,
+        email,
+        phone,
+      });
+      router.back();
+    } catch (e) {
+      console.log("Update profile error:", e);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ color: theme.colors.text }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -51,7 +85,6 @@ export default function PersonalDetailsScreen() {
         </Text>
       </View>
 
-      {/* Scrollable content */}
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 16,
@@ -60,11 +93,7 @@ export default function PersonalDetailsScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={labelStyle(theme)}>Full Name</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          style={inputStyle(theme)}
-        />
+        <TextInput value={name} onChangeText={setName} style={inputStyle(theme)} />
 
         <Text style={labelStyle(theme)}>Email</Text>
         <TextInput
@@ -82,7 +111,6 @@ export default function PersonalDetailsScreen() {
           style={inputStyle(theme)}
         />
 
-        {/* Save Button */}
         <TouchableOpacity
           onPress={handleSave}
           style={{

@@ -1,4 +1,5 @@
 import api from "./client";
+import { getNotificationsEnabled } from "../store/notificationSettings";
 
 export type BackendNotification = {
   id: string;
@@ -8,10 +9,12 @@ export type BackendNotification = {
   createdAt: string;
 };
 
-export async function fetchNotifications(): Promise<BackendNotification[]> {
+export const fetchNotifications = async () => {
+  const enabled = await getNotificationsEnabled();
+  if (!enabled) return [];
   const res = await api.get("/notifications");
   return res.data;
-}
+};
 
 export const markNotificationRead = async (id: string) => {
   await api.patch(`/notifications/${id}/read`);
