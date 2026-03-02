@@ -18,7 +18,7 @@ export default function SettingsScreen() {
         paddingTop: 50,
       }}
     >
-      {/* Header */}
+     
       <View
         style={{
           flexDirection: "row",
@@ -43,7 +43,7 @@ export default function SettingsScreen() {
         </Text>
       </View>
 
-      {/* Settings list */}
+     
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 16,
@@ -51,7 +51,7 @@ export default function SettingsScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Theme toggle */}
+        
         <View style={rowStyle(theme)}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ionicons
@@ -70,7 +70,7 @@ export default function SettingsScreen() {
           />
         </View>
 
-        {/* Notifications */}
+        
         <View style={rowStyle(theme)}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Ionicons

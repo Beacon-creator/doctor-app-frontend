@@ -2,6 +2,7 @@ import { View, TextInput, Text, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { useTheme } from "../styles/ThemeContext";
 import { Ionicons } from "@expo/vector-icons";
+import { TextInputProps } from "react-native";
 
 interface TextInputWithIconProps {
   label: string;
@@ -9,9 +10,10 @@ interface TextInputWithIconProps {
   value: string;
   onChangeText: (text: string) => void;
   secure?: boolean;
-  iconName?: keyof typeof Ionicons.glyphMap; // Optional icon
-  showHideToggle?: boolean; // For password toggle
-}
+  iconName?: keyof typeof Ionicons.glyphMap;
+  showHideToggle?: boolean;
+  autoCapitalize?: TextInputProps["autoCapitalize"];
+} 
 
 export default function TextInputWithIcon({
   label,

@@ -61,7 +61,7 @@ const toggleRead = async (id: string) => {
     await markNotificationRead(id);
   } catch (e) {
     console.log("Failed to mark read:", e);
-    // rollback in case of error
+    
     setNotifications(prev =>
       prev.map(n => (n.id === id ? { ...n, isRead: false } : n))
     );
@@ -99,7 +99,7 @@ const renderRightActions = (id: string) => (
   <TouchableOpacity
     onPress={() => removeNotification(id)}
     style={{
-      backgroundColor: "#ff4d4f",
+      backgroundColor: theme.colors.error,
       justifyContent: "center",
       alignItems: "center",
       width: 90,
@@ -107,8 +107,8 @@ const renderRightActions = (id: string) => (
       marginBottom: 12,
     }}
   >
-    <Ionicons name="trash" size={20} color="#fff" />
-    <Text style={{ color: "#fff", fontWeight: "bold", marginTop: 4 }}>
+    <Ionicons name="trash" size={20} color={theme.colors.text} />
+    <Text style={{ color: theme.colors.text, fontWeight: "bold", marginTop: 4 }}>
       Delete
     </Text>
     </TouchableOpacity>
@@ -204,7 +204,7 @@ const renderRightActions = (id: string) => (
                 borderRadius: 12,
               }}
             >
-              <Text style={{ color: "#fff", fontSize: 12 }}>
+              <Text style={{ color: theme.colors.text, fontSize: 12 }}>
                 {unreadCount}
               </Text>
             </View>

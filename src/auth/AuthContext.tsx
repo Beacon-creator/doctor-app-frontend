@@ -30,31 +30,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      async (user) => {
-        setUser(user);
-        setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+      setLoading(false);
 
-        if (user) {
-          try {
-            const dbUser = await syncUserWithBackend();
-            setBackendUser(dbUser);
-          } catch (err) {
-            console.error("BACKEND SYNC FAILED:", err);
-          }
-        } else {
-          setBackendUser(null);
+      if (user) {
+        try {
+          const dbUser = await syncUserWithBackend();
+          setBackendUser(dbUser);
+        } catch (err) {
+          console.error("BACKEND SYNC FAILED:", err);
+          setBackendUser(null); // fail gracefully
         }
-      },
-      (error) => {
-        setLoading(false);
-        console.error("AUTH ERROR:", error);
+      } else {
+        setBackendUser(null);
       }
-    );
+    });
 
     return unsubscribe;
   }, []);
+
 
   const logout = async () => {
     setLoading(true);

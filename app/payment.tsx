@@ -278,14 +278,14 @@ if (!doctor) {
               : theme.colors.muted,
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
+          <Text style={{ color: theme.colors.text, fontWeight: "bold", fontSize: 16 }}>
             {loading ? "Processing..." : "Pay"}
           </Text>
         </TouchableOpacity>
         {error && (
           <Text
             style={{
-              color: "red",
+              color: theme.colors.error,
               marginTop: 20,
               textAlign: "center",
             }}

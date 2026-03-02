@@ -165,7 +165,7 @@ export default function DateScreen() {
             : theme.colors.muted,
         }}
       >
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+        <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
           Set Appointment
         </Text>
       </TouchableOpacity>

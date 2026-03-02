@@ -73,7 +73,7 @@ export default function ChatRoom() {
         ...prev,
         {
           id: Date.now().toString(),
-          text: "Thanks — I understand. Let’s monitor that.",
+          text: "That's fine, See you soon.",
           sender: "doctor",
           time: now(),
         },
@@ -111,7 +111,7 @@ export default function ChatRoom() {
         >
           <Text
             style={{
-              color: isUser ? "#fff" : theme.colors.text,
+              color: isUser ? theme.colors.text : theme.colors.text,
             }}
           >
             {item.text}
@@ -235,7 +235,7 @@ export default function ChatRoom() {
             borderRadius: 20,
           }}
         >
-          <Ionicons name="send" size={18} color="#fff" />
+          <Ionicons name="send" size={18} color={theme.colors.text} />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

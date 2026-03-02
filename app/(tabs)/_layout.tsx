@@ -22,7 +22,7 @@ export default function TabLayout() {
         },
       }}
     >
-      {/* HOME */}
+      
       <Tabs.Screen
         name="index"
         options={{
@@ -32,7 +32,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* CHAT */}
+     
       <Tabs.Screen
         name="chat"
         options={{
@@ -42,7 +42,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* APPOINTMENTS */}
+     
       <Tabs.Screen
         name="appointments"
         options={{
@@ -52,7 +52,7 @@ export default function TabLayout() {
         }}
       />
 
-      {/* PROFILE */}
+     
       <Tabs.Screen
         name="profile"
         options={{

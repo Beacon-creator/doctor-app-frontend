@@ -66,7 +66,7 @@ export default function LogoutScreen() {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold" }}>
+          <Text style={{ color: theme.colors.text, fontWeight: "bold" }}>
             Yes, Logout
           </Text>
         </TouchableOpacity>

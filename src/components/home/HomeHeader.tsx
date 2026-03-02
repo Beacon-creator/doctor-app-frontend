@@ -2,16 +2,27 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useTheme } from "../../styles/ThemeContext";
+import { useAuth } from "@/src/auth/useAuth";
 
+type Props = {
+  unreadCount?: number;
+};
 
-  type Props = {
-    unreadCount?: number;
-  };
+export default function HomeHeader({ unreadCount = 0 }: Props) {
+  const { theme } = useTheme();
+  const router = useRouter();
+  const { user, backendUser } = useAuth();
 
+  // Prefer backend full name, fallback to Firebase displayName, then email
+  const displayName =
+    backendUser?.fullName ||
+    user?.displayName ||
+    user?.email?.split("@")[0] ||
+    "User";
 
-  export default function HomeHeader({ unreadCount = 0 }: Props) {
-    const { theme } = useTheme();
-    const router = useRouter();
+  const avatar =
+    user?.photoURL ||
+    "https://i.pravatar.cc/150"; // fallback avatar
 
   return (
     <View
@@ -27,7 +38,7 @@ import { useTheme } from "../../styles/ThemeContext";
       {/* Left — profile + greeting */}
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Image
-          source={{ uri: "https://i.pravatar.cc/150" }}
+          source={{ uri: avatar }}
           style={{
             width: 44,
             height: 44,
@@ -47,8 +58,9 @@ import { useTheme } from "../../styles/ThemeContext";
               fontWeight: "bold",
               color: theme.colors.text,
             }}
+            numberOfLines={1}
           >
-            Telehealth User
+            {displayName}
           </Text>
         </View>
       </View>
@@ -64,7 +76,6 @@ import { useTheme } from "../../styles/ThemeContext";
           color={theme.colors.text}
         />
 
-        {/* badge */}
         {unreadCount > 0 && (
           <View
             style={{

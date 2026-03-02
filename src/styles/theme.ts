@@ -1,8 +1,8 @@
 export const lightTheme = {
   colors: {
-    background: "#F9F9F9",
+    background: "#ddd4d4",
     text: "#1A1A1A",
-    primary: "#007BFF",
+    primary: "#81b7f1",
     secondary: "#FFA500",
     tabmute: "#bdbdbd",
     muted: "#6B7280",

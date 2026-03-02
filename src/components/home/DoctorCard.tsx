@@ -46,7 +46,7 @@ export default function DoctorCard({ doctor }: any) {
         <View
           style={{ flexDirection: "row", alignItems: "center", marginTop: 4 }}
         >
-          <Ionicons name="star" size={14} color="#FFD700" />
+          <Ionicons name="star" size={14} color={theme.colors.secondary} />
           <Text style={{ marginLeft: 4, color: theme.colors.text }}>
             {doctor.rating}
           </Text>
@@ -68,7 +68,7 @@ export default function DoctorCard({ doctor }: any) {
           justifyContent: "center",
         }}
       >
-        <Text style={{ color: "#fff" }}>Book</Text>
+        <Text style={{ color: theme.colors.text }}>Book</Text>
       </TouchableOpacity>
     </View>
   );

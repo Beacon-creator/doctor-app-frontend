@@ -121,7 +121,7 @@ export default function PersonalDetailsScreen() {
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
+          <Text style={{ color: theme.colors.text, fontWeight: "bold", fontSize: 16 }}>
             Save Changes
           </Text>
         </TouchableOpacity>

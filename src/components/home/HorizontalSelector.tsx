@@ -29,7 +29,7 @@ export default function HorizontalSelector({
           >
             <Text
               style={{
-                color: active ? "#fff" : theme.colors.text,
+                color: active ? theme.colors.text : theme.colors.text,
                 fontWeight: "600",
               }}
             >

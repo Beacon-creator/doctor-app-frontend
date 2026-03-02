@@ -46,7 +46,7 @@ export default function ProfileScreen() {
     action?: string;
   }[] = [
     { id: "history", title: "History", icon: "time-outline", route: "/profile/history" },
-    { id: "details", title: "Personal Details", icon: "person-outline", route: "/profile/details" },
+    { id: "details", title: "Personal Details", icon: "person-outline", route: "/profile/personal-details" },
     { id: "settings", title: "Settings", icon: "settings-outline", route: "/profile/settings" },
     { id: "logout", title: "Logout", icon: "log-out-outline", action: "logout" },
   ];

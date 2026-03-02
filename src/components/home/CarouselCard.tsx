@@ -16,11 +16,11 @@ export default function CarouselCard() {
         justifyContent: "center",
       }}
     >
-      <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 16 }}>
+      <Text style={{ color: theme.colors.text, fontWeight: "bold", fontSize: 16 }}>
         Health Tip
       </Text>
 
-      <Text style={{ color: "#fff", marginTop: 6 }}>
+      <Text style={{ color: theme.colors.text, marginTop: 6 }}>
         Stay hydrated and exercise daily.
       </Text>
     </View>

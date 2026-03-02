@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "../../src/styles/ThemeContext";
 import { confirmAppointmentStatus, fetchAppointments } from "../../src/api/appointment";
 
+
 export default function AppointmentsScreen() {
   const { theme } = useTheme();
   const [appointments, setAppointments] = useState([]);
@@ -100,7 +101,7 @@ export default function AppointmentsScreen() {
                   width: 100,
                 }}
               >
-                <Text style={{ color: "#fff", fontWeight: "600" }}>Confirm</Text>
+                <Text style={{ color: theme.colors.text, fontWeight: "600" }}>Confirm</Text>
               </TouchableOpacity>
             )}
 

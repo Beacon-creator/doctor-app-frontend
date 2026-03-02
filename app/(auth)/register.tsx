@@ -1,23 +1,47 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../../src/auth/firebase";
 import { router } from "expo-router";
 import TextInputWithIcon from "../../src/components/TextInputWithIcon";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { mapAuthError } from "@/src/auth/mapAuthErrors";
 
 export default function Register() {
   const { theme } = useTheme();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleRegister = async () => {
+    if (!fullname || !email || !password) {
+      Alert.alert("Missing info", "Please fill in all fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert("Weak password", "Password must be at least 6 characters.");
+      return;
+    }
+
     try {
-      await createUserWithEmailAndPassword(auth, email.trim(), password);
+      setLoading(true);
+
+      const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
+
+      await updateProfile(cred.user, {
+        displayName: fullname.trim(),
+      });
+
       router.replace("/(auth)/success");
     } catch (error: any) {
       console.log("REGISTER ERROR:", error.code, error.message);
+
+      Alert.alert("Registration failed", mapAuthError(error));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,6 +73,7 @@ export default function Register() {
         value={email}
         onChangeText={setEmail}
         iconName="mail-outline"
+        autoCapitalize="none"
       />
 
       <TextInputWithIcon
@@ -62,6 +87,7 @@ export default function Register() {
       />
 
       <TouchableOpacity
+        disabled={loading}
         style={{
           width: "100%",
           padding: 15,
@@ -69,11 +95,12 @@ export default function Register() {
           backgroundColor: theme.colors.primary,
           marginVertical: 20,
           alignItems: "center",
+          opacity: loading ? 0.6 : 1,
         }}
         onPress={handleRegister}
       >
         <Text style={{ color: theme.colors.background, fontWeight: "bold", fontSize: 16 }}>
-          Sign Up
+          {loading ? "Creating account..." : "Sign Up"}
         </Text>
       </TouchableOpacity>
 

@@ -1,23 +1,37 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import { confirmPasswordReset } from "firebase/auth";
 import { auth } from "../../src/auth/firebase";
 import { router, useLocalSearchParams } from "expo-router";
 import TestInputWithIcon from "../../src/components/TextInputWithIcon";
 import { useTheme } from "../../src/styles/ThemeContext";
+import { mapAuthError } from "@/src/auth/mapAuthErrors";
+
 
 export default function ResetPassword() {
   const { theme } = useTheme();
   const { oobCode } = useLocalSearchParams(); // Firebase reset code from email
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleReset = async () => {
-    if (!oobCode) return;
+    if (!oobCode){
+      Alert.alert("Invalid reset link", "The password reset link is invalid or has expired.");
+      return;
+    }
+    if(password.length < 6){
+      Alert.alert("Weak password", "Password must be at least 6 characters.");
+      return;
+    }
     try {
+      setSubmitting(true);
       await confirmPasswordReset(auth, oobCode as string, password);
       router.push("/(auth)/success");
     } catch (error: any) {
       console.log("RESET PASSWORD ERROR:", error.code, error.message);
+      Alert.alert("Failed to reset password", mapAuthError(error));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -46,6 +60,7 @@ export default function ResetPassword() {
       />
 
       <TouchableOpacity
+        disabled={submitting}
         style={{
           width: "100%",
           padding: 15,

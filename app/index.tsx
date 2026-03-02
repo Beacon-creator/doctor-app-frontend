@@ -19,10 +19,7 @@ export default function Index() {
 
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.85);
-  const DEV_FORCE_LOGIN = false; // set to false to skip login during development
 
-
-  // animated style
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
     transform: [{ scale: scale.value }],
@@ -64,11 +61,6 @@ export default function Index() {
     );
   }
 
-  if (DEV_FORCE_LOGIN) {
-    return <Redirect href="/(auth)/login" />;
-  }
-
-  //original routing logic preserved
   if (!user) {
     return <Redirect href="/(auth)/login" />;
   }
