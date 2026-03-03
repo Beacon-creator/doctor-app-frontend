@@ -32,7 +32,6 @@ export default function ProfileScreen() {
       const data = await fetchMe();
       setUser(data);
     } catch (e) {
-      console.log("Fetch me error:", e);
     } finally {
       setLoading(false);
     }

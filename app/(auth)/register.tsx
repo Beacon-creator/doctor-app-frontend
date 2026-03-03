@@ -37,8 +37,6 @@ export default function Register() {
 
       router.replace("/(auth)/success");
     } catch (error: any) {
-      console.log("REGISTER ERROR:", error.code, error.message);
-
       Alert.alert("Registration failed", mapAuthError(error));
     } finally {
       setLoading(false);

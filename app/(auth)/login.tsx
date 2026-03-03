@@ -32,10 +32,8 @@ export default function Login() {
         setSubmitting(true);
         const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
         const token = await cred.user.getIdToken();
-        console.log("ID TOKEN:", token);
         router.replace("/(tabs)");
       } catch (error: any) {
-        console.log("LOGIN ERROR:", error.code, error.message);
         Alert.alert("Login failed", mapAuthError(error));
       } finally {
         setSubmitting(false);

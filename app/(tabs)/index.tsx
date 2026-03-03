@@ -59,7 +59,6 @@ export default function HomeScreen() {
     const unread = notifications.filter((n: any) => !n.isRead).length;
     setUnreadCount(unread);
   } catch (e) {
-    console.log("Notification fetch error:", e);
     setUnreadCount(0); 
   }
 };
@@ -80,8 +79,7 @@ export default function HomeScreen() {
       }));
 
       setDoctors(mapped);
-    } catch (e) {
-      console.log("Doctors fetch error:", e);
+    } catch {
       setDoctors([]);
     } finally {
       setLoading(false);
@@ -94,13 +92,10 @@ export default function HomeScreen() {
 
   const loadDoctor = async () => {
     try {
-      console.log("Loading payment doctor:", doctorId);
       setLoading(true);
       const data = await fetchDoctorById(doctorId as string);
-      console.log("Payment doctor:", data);
       setDoctor(data);
-    } catch (e) {
-      console.log("Doctor fetch error:", e);
+    } catch {
       setDoctor(null);
     } finally {
       setLoading(false);

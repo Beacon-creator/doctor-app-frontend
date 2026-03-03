@@ -39,8 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const dbUser = await syncUserWithBackend();
           setBackendUser(dbUser);
         } catch (err) {
-          console.error("BACKEND SYNC FAILED:", err);
-          setBackendUser(null); // fail gracefully
+          setBackendUser(null);
         }
       } else {
         setBackendUser(null);

@@ -23,7 +23,6 @@ export default function ForgotPassword() {
       await sendPasswordResetEmail(auth, email.trim());
       router.push("/(auth)/success");
     } catch (error: any) {
-      console.log("RESET ERROR:", error.code, error.message);
       Alert.alert("Failed to send reset email", mapAuthError(error));
     } finally {
       setSubmitting(false);

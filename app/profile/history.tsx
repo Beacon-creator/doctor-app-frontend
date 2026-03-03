@@ -29,18 +29,11 @@ export default function HistoryScreen() {
       });
 
       setHistory(past);
-
-      console.log("history:", past);
     } catch (e) {
-      console.log("History error:", e);
     } finally {
       setLoading(false);
     }
   };
-
-
-  
-
 
   const renderItem = ({ item }: any) => (
     <View

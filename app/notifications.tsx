@@ -42,7 +42,6 @@ const loadNotifications = async () => {
       }))
     );
   } catch (e) {
-    console.log("Fetch notifications error:", e);
   } finally {
     setLoading(false);
   }
@@ -60,7 +59,6 @@ const toggleRead = async (id: string) => {
   try {
     await markNotificationRead(id);
   } catch (e) {
-    console.log("Failed to mark read:", e);
     
     setNotifications(prev =>
       prev.map(n => (n.id === id ? { ...n, isRead: false } : n))
@@ -83,7 +81,6 @@ const markAllRead = async () => {
     try {
       await markNotificationRead(n.id);
     } catch (e) {
-      console.log("Failed to mark read:", e);
       
       setNotifications(prev =>
         prev.map(notif =>

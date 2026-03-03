@@ -10,8 +10,6 @@ import { fetchDoctorById } from "../../src/api/doctor";
 import { useLocalSearchParams } from "expo-router";
 
 export default function DateScreen() {
-  console.log("DateScreen rendered with params:", useLocalSearchParams());
-  console.log("Date Screen mounted with doctorId:", useLocalSearchParams().doctorId);
   const { theme } = useTheme();
   const router = useRouter();
 
@@ -25,9 +23,6 @@ export default function DateScreen() {
 
   useEffect(() => {
     if (!doctorId) return;
-
-    console.log("DATE SCREEN doctorId raw:", doctorId);
-
     loadDoctor();
   }, [doctorId]);
 
@@ -43,7 +38,6 @@ export default function DateScreen() {
 
       setDoctor(data);
     } catch (e) {
-      console.log("Doctor fetch error:", e);
       setError("Failed to load doctor");
     } finally {
       setLoading(false);

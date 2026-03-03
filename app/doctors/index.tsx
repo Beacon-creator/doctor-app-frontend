@@ -26,7 +26,6 @@ export default function DoctorsScreen() {
       const data = await fetchDoctors();
       setDoctors(data);
     } catch (e) {
-      console.log("Doctor fetch error:", e);
     } finally {
       setLoading(false);
     }

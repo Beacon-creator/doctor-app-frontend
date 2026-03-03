@@ -5,18 +5,14 @@ export async function createAppointment(payload: {
   date: string;  
   time: string;  
 }) {
-  console.log("Creating appointment:", payload);
 
   const res = await api.post("users/appointments", payload);
-
-  console.log("Appointment response:", res.data);
 
   return res.data;
 }
 
 export const fetchAppointments = async () => {
   const res = await api.get("users/appointments");
-  console.log("appointment get", res.data);
   return res.data;
 };
 

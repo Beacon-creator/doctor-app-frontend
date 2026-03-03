@@ -28,7 +28,6 @@ export default function ResetPassword() {
       await confirmPasswordReset(auth, oobCode as string, password);
       router.push("/(auth)/success");
     } catch (error: any) {
-      console.log("RESET PASSWORD ERROR:", error.code, error.message);
       Alert.alert("Failed to reset password", mapAuthError(error));
     } finally {
       setSubmitting(false);

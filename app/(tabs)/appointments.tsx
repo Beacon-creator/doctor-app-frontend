@@ -16,10 +16,8 @@ export default function AppointmentsScreen() {
   const loadAppointments = async () => {
     try {
       const data = await fetchAppointments();
-      console.log("Appointments:", data);
       setAppointments(data);
     } catch (e) {
-      console.log("Fetch appointments error:", e);
     } finally {
       setLoading(false);
     }
@@ -88,9 +86,8 @@ export default function AppointmentsScreen() {
                 onPress={async () => {
                   try {
                     await confirmAppointmentStatus(appt.id);
-                    await loadAppointments(); // ensure refresh
+                    await loadAppointments(); 
                   } catch (e) {
-                    console.log("Confirm error:", e);
                   }
                 }}
                 style={{

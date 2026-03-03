@@ -73,12 +73,7 @@ const handlePay = async () => {
         : doctor.workingHours?.[0] || time,
     };
 
-    console.log("Creating appointment with:", payload);
-
     const result = await createAppointment(payload);
-
-    console.log("Appointment created:", result);
-
     router.push({
       pathname: "/payment-success",
       params: {
@@ -88,7 +83,6 @@ const handlePay = async () => {
       },
     });
   } catch (e) {
-    console.log("Appointment error:", e);
     setError("Payment failed. Please try again.");
   } finally {
     setLoading(false);
@@ -102,13 +96,10 @@ useEffect(() => {
 
 const loadDoctor = async () => {
   try {
-    console.log("Loading payment doctor:", doctorId);
     setLoading(true);
     const data = await fetchDoctorById(doctorId as string);
-    console.log("Payment doctor:", data);
     setDoctor(data);
   } catch (e) {
-    console.log("Doctor fetch error:", e);
     setDoctor(null);
   } finally {
     setLoading(false);

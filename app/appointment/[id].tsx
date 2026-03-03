@@ -27,19 +27,12 @@ export default function AppointmentScreen() {
 
   const loadDoctor = async () => {
     try {
-      console.log("Fetching doctor:", doctorId);
-
       const id = Array.isArray(doctorId)
         ? doctorId[0]
         : doctorId;
-
       const data = await fetchDoctorById(id);
-
-      console.log("Doctor API result:", data);
-
       setDoctor(data);
     } catch (e) {
-      console.log("Doctor fetch failed:", e);
     } finally {
       setLoading(false);
     }
@@ -205,11 +198,6 @@ export default function AppointmentScreen() {
         {/* Book Button */}
         <TouchableOpacity
           onPress={() => {
-            console.log("Book appointment with:", {
-              doctorId: doctor.id,
-              date,
-              time,
-            }); 
             router.push({
               pathname: "/payment",
               params: {

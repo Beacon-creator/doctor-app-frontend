@@ -25,7 +25,6 @@ export default function PersonalDetailsScreen() {
       setEmail(me.email || "");
       setPhone(me.phone || "");
     } catch (e) {
-      console.log("Profile fetch error:", e);
     } finally {
       setLoading(false);
     }
@@ -40,7 +39,6 @@ export default function PersonalDetailsScreen() {
       });
       router.back();
     } catch (e) {
-      console.log("Update profile error:", e);
     }
   };
 
